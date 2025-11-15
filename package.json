@@ -1,6 +1,6 @@
 {
   "name": "nucleic-acid-utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A small web application to pair DNA and RNA bases for the subject of biology.",
   "main": "main.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "@electron/remote": "^2.1.2",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.2.0",
+    "cssnano": "^7.1.2",
     "fastify": "^5.4.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",

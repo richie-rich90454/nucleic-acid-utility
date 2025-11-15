@@ -1,9 +1,9 @@
-//Use: "terser script.js -o script.min.js --compress --mangle" to compress the file (make the min file)
+// Use: terser script.js -o script.min.js --compress --mangle
 document.addEventListener("DOMContentLoaded", function (){
     let $sequenceInput=$("#sequence");
     let $conversionType=$("#conversionType");
     let $showBaseNames=$("#showBaseNames");
-    let $colorizeSequence=$("#colorizeSequence");
+    let $colorizeSequenceCheckbox=$("#colorizeSequence");
     let $result=$("#result");
     let $error=$("#error");
     let $baseButtons=$("#base-buttons");
@@ -37,30 +37,247 @@ document.addEventListener("DOMContentLoaded", function (){
         "AGU": "Serine", "AGC": "Serine", "AGA": "Arginine", "AGG": "Arginine",
         "GGU": "Glycine", "GGC": "Glycine", "GGA": "Glycine", "GGG": "Glycine"
     };
-    $sequenceInput.tooltip({
-        content: "Enter DNA or RNA sequence (only A, T, G, C, U characters allowed)",
-        position:{ my: "left+10 center", at: "right center" }
-    });
-    $sequenceInput.on("focus", function (){
-        $(this).addClass("highlight-effect");
-    }).on("blur", function (){
-        $(this).removeClass("highlight-effect");
-    });
-    $sequenceInput.on("input", convertSequence);
-    $conversionType.on("change", function (){
-        updateBaseButtons();
+    let aminoAcidColors={
+        "Alanine": "#FF6B6B", "Arginine": "#4ECDC4", "Asparagine": "#1A936F",
+        "Aspartic Acid": "#6A0572", "Cysteine": "#FFD166", "Glutamic Acid": "#118AB2",
+        "Glutamine": "#073B4C", "Glycine": "#EF476F", "Histidine": "#FFD166",
+        "Isoleucine": "#06D6A0", "Leucine": "#7209B7", "Lysine": "#3A86FF",
+        "Methionine": "#FB5607", "Phenylalanine": "#8338EC", "Proline": "#3A86FF",
+        "Serine": "#FF006E", "Threonine": "#FFBE0B", "Tryptophan": "#8AC926",
+        "Tyrosine": "#FF9E00", "Valine": "#4361EE"
+    };
+    let baseColors={
+        "A": "#FF6B6B",
+        "T": "#4ECDC4",
+        "U": "#1A936F",
+        "G": "#FFD166",
+        "C": "#6A0572"
+    };
+    let MAP_DNA_COMPLEMENT={
+        A: "T", T: "A", C: "G", G: "C"
+    };
+    let MAP_RNA_COMPLEMENT={
+        A: "U", U: "A", C: "G", G: "C"
+    };
+    let MAP_DNA_TRANSCRIPT={
+        A: "U", T: "A", C: "G", G: "C"
+    };
+    let COMPLEMENT_MAP_FOR_ANTICODON={
+        "A": "U", "U": "A", "G": "C", "C": "G"
+    };
+    function isDNAType(type){
+        return type&&type.startsWith("DNA");
+    }
+    function isRNAType(type){
+        return type&&type.startsWith("RNA");
+    }
+    function mapSequence(sequence, map){
+        if (!sequence) return "";
+        let out="";
+        for (let i=0;i<sequence.length;i++){
+            out+=map[sequence[i]]||sequence[i];
+        }
+        return out;
+    }
+    function getBaseColor(base){
+        return baseColors[base]||"#6C757D";
+    }
+    function setSequence(newSeq){
+        $sequenceInput.val(newSeq);
         convertSequence();
-    });
-    $showBaseNames.on("change", convertSequence);
-    $colorizeSequence.on("change", convertSequence);
-    $deleteLast.on("click", deleteLastCharacter);
-    $clearAll.on("click", clearSequence);
-    $copyResults.on("click", copyResultsToClipboard);
-    $resetAll.on("click", resetApplication);
-    updateBaseButtons();
-    updateButtonStates();
+    }
+    function updateButtonStates(){
+        let seq=$sequenceInput.val();
+        let disabled=!seq||seq.length==0;
+        $deleteLast.prop("disabled", disabled);
+        $clearAll.prop("disabled", disabled);
+    }
+    function showError(message){
+        $error.text(message).fadeIn(200).addClass("error-shake");
+        setTimeout(()=> $error.removeClass("error-shake"), 500);
+        $result.hide();
+    }
+    function clearError(){
+        $error.hide().text("");
+        $result.show();
+    }
+    function getDNAComplement(seq){
+        return mapSequence(seq, MAP_DNA_COMPLEMENT);
+    }
+    function getRNAComplement(seq){
+        return mapSequence(seq, MAP_RNA_COMPLEMENT);
+    }
+    function getRNATranscriptFromDNA(seq){
+        return mapSequence(seq, MAP_DNA_TRANSCRIPT);
+    }
+    function getAnticodon(codon){
+        let anticodon="";
+        for (let i=codon.length-1;i>=0;i--){
+            anticodon+=COMPLEMENT_MAP_FOR_ANTICODON[codon[i]]||codon[i];
+        }
+        return anticodon;
+    }
+    function decodeRNAtoProtein(rnaSequence){
+        let codons=[];
+        for (let i=0;i<rnaSequence.length;i+=3){
+            let codon=rnaSequence.slice(i, i+3);
+            if (codon.length==3){
+                let anticodon=getAnticodon(codon);
+                let aminoAcid=codonTable[codon]||"Unknown";
+                codons.push({ codon: codon, anticodon: anticodon, aminoAcid: aminoAcid });
+            }
+            else{
+                return{codons: codons, incomplete: codon};
+            }
+        }
+        return{codons: codons, incomplete: null};
+    }
+    function colorizeSequence(sequence){
+        let out="";
+        for (let i=0;i<sequence.length;i++){
+            let base=sequence[i];
+            out+=`<span class="base-${base.toLowerCase()}">${base}</span>`;
+        }
+        return out;
+    }
+    function getLabel(conversionType){
+        let labels={
+            "DNA_COMPLEMENT": "Complement DNA",
+            "RNA_COMPLEMENT": "Complement RNA",
+            "DNA_TRANSCRIPT": "RNA Transcript"
+        };
+        return labels[conversionType]||"";
+    }
+    function getBaseName(base){
+        let baseNames={ A: "Adenine", T: "Thymine", U: "Uracil", C: "Cytosine", G: "Guanine" };
+        return baseNames[base]||base;
+    }
+    function getBaseNames(sequence){
+        return sequence.split("").map(getBaseName).join(", ");
+    }
+    function updateSequenceConversion(sequence, conversionType, showBaseNames, colorize){
+        let outputSequence=getOutputSequence(sequence, conversionType);
+        let html=`<p><strong>${getLabel(conversionType)}:</strong> `;
+        if (colorize){
+            html+=`<span class="sequence-container">${colorizeSequence(outputSequence)}</span>`;
+        }
+        else{
+            html+=outputSequence;
+        }
+        html+=`</p>`;
+        if (showBaseNames){
+            html+=`<p><strong> Input Bases:</strong> ${getBaseNames(sequence)}</p>`;
+            html+=`<p><strong> Output Bases:</strong> ${getBaseNames(outputSequence)}</p>`;
+        }
+        $result.html(html);
+    }
+    function updateProteinConversion(sequence, conversionType, showBaseNames, colorize){
+        let rnaSequence=(conversionType=="RNA_PROTEIN")?sequence:getRNATranscriptFromDNA(sequence);
+        let result=decodeRNAtoProtein(rnaSequence);
+        let codons=result.codons;
+        let incomplete=result.incomplete;
+        if (codons.length==0){
+            showError("No complete codons found.");
+            return;
+        }
+        let html="<table><tr><th>Codon</th><th>tRNA Anticodon</th><th>Amino Acid</th></tr>";
+        for (let i=0;i<codons.length;i++){
+            let c=codons[i];
+            let codonDisplay=colorize?colorizeSequence(c.codon):c.codon;
+            let anticodonDisplay=colorize?colorizeSequence(c.anticodon):c.anticodon;
+            html+=`<tr><td>${codonDisplay}</td><td>${anticodonDisplay}</td><td><strong>${c.aminoAcid}</strong></td></tr>`;
+        }
+        html+="</table>";
+        if (incomplete) html+=`<p><strong>Incomplete codon:</strong> ${incomplete}</p>`;
+        if (showBaseNames) html+=`<p><strong>Input Bases:</strong> ${getBaseNames(sequence)}</p>`;
+        $result.html(html);
+    }
+    function getOutputSequence(sequence, conversionType){
+        if (conversionType=="DNA_COMPLEMENT"){
+            return getDNAComplement(sequence);
+        }
+        if (conversionType=="RNA_COMPLEMENT"){
+            return getRNAComplement(sequence);
+        }
+        if (conversionType=="DNA_TRANSCRIPT"){
+            return getRNATranscriptFromDNA(sequence);
+        }
+        return "";
+    }
+    function validateSequence(sequence, conversionType){
+        clearError();
+        let validDNA=/^[ATGC]*$/i;
+        let validRNA=/^[AUGC]*$/i;
+        if (sequence==""){
+            $result.html("");
+            return true;
+        }
+        let useRNA=(conversionType=="RNA_PROTEIN"||conversionType=="RNA_COMPLEMENT");
+        if (useRNA){
+            if (!validRNA.test(sequence)){
+                showError("Invalid RNA sequence. Only A, U, G, C characters are allowed.");
+                return false;
+            }
+        }
+        else{
+            if (!validDNA.test(sequence)){
+                showError("Invalid DNA sequence. Only A, T, G, C characters are allowed.");
+                return false;
+            }
+        }
+        return true;
+    }
+    function updateBaseButtons(){
+        let conversionType=$conversionType.val();
+        let bases=(["DNA_COMPLEMENT", "DNA_TRANSCRIPT", "DNA_PROTEIN"].includes(conversionType))?dnaBases:rnaBases;
+        $baseButtons.empty();
+        bases.forEach(base=>{
+            let $btn=$(`<button class="base-btn">${base}</button>`);
+            $btn.on("click", function (){
+                let current=$sequenceInput.val();
+                $sequenceInput.val(current+base);
+                convertSequence();
+            });
+            $baseButtons.append($btn);
+        });
+    }
+    function deleteLastCharacter(){
+        let s=$sequenceInput.val();
+        if (s.length > 0) setSequence(s.slice(0, -1));
+    }
+    function clearSequence(){
+        setSequence("");
+        $sequenceInput.focus();
+    }
+    function copyResultsToClipboard(){
+        let text=$result.text();
+        if (text){
+            navigator.clipboard.writeText(text).then(()=>{
+                alert("Results copied to clipboard!");
+            }).catch(err=>{
+                showError("Failed to copy results.");
+                console.error("Copy failed:", err);
+            });
+        }
+        else{
+            showError("No results to copy.");
+        }
+    }
+    function resetApplication(){
+        $sequenceInput.val("");
+        $conversionType.val("DNA_COMPLEMENT");
+        $showBaseNames.prop("checked", true);
+        $colorizeSequenceCheckbox.prop("checked", true);
+        $result.html("");
+        $visualizerContainer.hide();
+        clearError();
+        updateBaseButtons();
+        updateButtonStates();
+        $sequenceInput.focus();
+    }
     function drawVisualization(sequence, conversionType){
         $visualizerContainer.hide();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         let baseWidth=40;
         let baseHeight=20;
@@ -70,21 +287,18 @@ document.addEventListener("DOMContentLoaded", function (){
         let dpr=window.devicePixelRatio||1;
         canvas.style.width=width+"px";
         canvas.style.height=height+"px";
-        canvas.width=width*dpr;
-        canvas.height=height*dpr;
-        ctx.scale(dpr, dpr);
-        let rnaSequence;
+        canvas.width=Math.round(width*dpr);
+        canvas.height=Math.round(height*dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        let rnaSequence=null;
         if (conversionType=="RNA_PROTEIN"){
             rnaSequence=sequence;
         }
         else if (conversionType=="DNA_PROTEIN"){
             rnaSequence=getRNATranscriptFromDNA(sequence);
         }
-        else{
-            rnaSequence=null;
-        }
         if (conversionType.includes("PROTEIN")){
-            drawPolypeptideChain(rnaSequence, width, height, padding);
+            drawPolypeptideChain(rnaSequence||"", width, height, padding);
         }
         else{
             drawAntiparallelStrands(sequence, conversionType, width, height, padding);
@@ -123,12 +337,11 @@ document.addEventListener("DOMContentLoaded", function (){
         ctx.textBaseline="middle";
     }
     function drawStrand(sequence, startX, startY, baseWidth, baseHeight, strandType, conversionType){
-        let isTopStrand=strandType=="top";
-        let direction=isTopStrand?1:-1;
+        let isTop=strandType=="top";
         for (let i=0;i<sequence.length;i++){
             let x=startX+i*baseWidth;
             let y=startY;
-            let base=sequence[i];
+            let base=sequence[i]||"";
             ctx.fillStyle=getBaseColor(base, conversionType);
             ctx.fillRect(x, y, baseWidth, baseHeight);
             ctx.strokeStyle="#343A40";
@@ -140,8 +353,8 @@ document.addEventListener("DOMContentLoaded", function (){
             ctx.textBaseline="middle";
             ctx.fillText(base, x+baseWidth/2, y+baseHeight/2);
             ctx.beginPath();
-            ctx.moveTo(x, y+(isTopStrand?0:baseHeight));
-            ctx.lineTo(x+baseWidth, y+(isTopStrand?0:baseHeight));
+            ctx.moveTo(x, y+(isTop?0:baseHeight));
+            ctx.lineTo(x+baseWidth, y+(isTop?0:baseHeight));
             ctx.strokeStyle="#495057";
             ctx.lineWidth=3;
             ctx.stroke();
@@ -153,25 +366,18 @@ document.addEventListener("DOMContentLoaded", function (){
         let spacing=60;
         let startX=padding+aminoAcidRadius;
         let startY=height/2;
-        let aminoAcidColors={
-            "Alanine": "#FF6B6B", "Arginine": "#4ECDC4", "Asparagine": "#1A936F",
-            "Aspartic Acid": "#6A0572", "Cysteine": "#FFD166", "Glutamic Acid": "#118AB2",
-            "Glutamine": "#073B4C", "Glycine": "#EF476F", "Histidine": "#FFD166",
-            "Isoleucine": "#06D6A0", "Leucine": "#7209B7", "Lysine": "#3A86FF",
-            "Methionine": "#FB5607", "Phenylalanine": "#8338EC", "Proline": "#3A86FF",
-            "Serine": "#FF006E", "Threonine": "#FFBE0B", "Tryptophan": "#8AC926",
-            "Tyrosine": "#FF9E00", "Valine": "#4361EE"
-        };
         let codons=[];
         for (let i=0;i<rnaSequence.length;i+=3){
             let codon=rnaSequence.slice(i, i+3);
             if (codon.length==3){
                 let aminoAcid=codonTable[codon]||"Unknown";
-                if (aminoAcid=="Stop") break;
+                if (aminoAcid=="Stop"){
+                    break;
+                }
                 codons.push({
                     codon: codon,
                     aminoAcid: aminoAcid,
-                    color: aminoAcidColors[aminoAcid.split(" ")[0]]||"#6C757D",
+                    color: aminoAcidColors[aminoAcid]||"#6C757D",
                     x: startX+codons.length*spacing,
                     y: startY
                 });
@@ -191,24 +397,20 @@ document.addEventListener("DOMContentLoaded", function (){
         canvas.removeEventListener("mouseout", handleMouseOut);
         function handleMouseMove(e){
             let rect=canvas.getBoundingClientRect();
-            let mouseX=e.clientX-rect.left;
-            let mouseY=e.clientY-rect.top;
+            let mouseX=(e.clientX-rect.left);
+            let mouseY=(e.clientY-rect.top);
             let tooltipShown=false;
             for (let codon of codons){
                 let distance=Math.sqrt((mouseX-codon.x)**2+(mouseY-codon.y)**2);
                 if (distance<aminoAcidRadius){
-                    $aminoAcidTooltip
-                        .text(codon.aminoAcid+" ("+codon.codon+")")
-                        .css({
-                            left: e.pageX+10,
-                            top: e.pageY-30,
-                            display: "block"
-                        });
+                    $aminoAcidTooltip.text(`${codon.aminoAcid} (${codon.codon})`).css({ left: e.pageX+10, top: e.pageY-30, display: "block" });
                     tooltipShown=true;
                     break;
                 }
             }
-            if (!tooltipShown) $aminoAcidTooltip.hide();
+            if (!tooltipShown){
+                $aminoAcidTooltip.hide();
+            }
         }
         function handleMouseOut(){
             $aminoAcidTooltip.hide();
@@ -232,22 +434,13 @@ document.addEventListener("DOMContentLoaded", function (){
             ctx.fillText(abbr, x, y);
         }
     }
-    function getBaseColor(base, conversionType){
-        let colors={
-            "A": "#FF6B6B",
-            "T": "#4ECDC4",
-            "U": "#1A936F",
-            "G": "#FFD166",
-            "C": "#6A0572"
-        };
-        return colors[base]||"#6C757D";
-    }
     function convertSequence(){
         clearError();
-        let sequence=$sequenceInput.val().trim().toUpperCase();
+        let sequenceRaw=$sequenceInput.val()||"";
+        let sequence=sequenceRaw.trim().toUpperCase();
         let conversionType=$conversionType.val();
         let showBaseNames=$showBaseNames.is(":checked");
-        let colorize=$colorizeSequence.is(":checked");
+        let colorize=$colorizeSequenceCheckbox.is(":checked");
         if (!validateSequence(sequence, conversionType)){
             return;
         }
@@ -265,265 +458,25 @@ document.addEventListener("DOMContentLoaded", function (){
         }
         updateButtonStates();
     }
-    function validateSequence(sequence, conversionType){
-        clearError();
-        let validDNA=/^[ATGC]*$/i;
-        let validRNA=/^[AUGC]*$/i;
-        let isValid=true;
-        let errorMessage="";
-        if (sequence==""){
-            $result.html("");
-            return true;
-        }
-        if (conversionType=="RNA_PROTEIN"||conversionType=="RNA_COMPLEMENT"){
-            if (!validRNA.test(sequence)){
-                isValid=false;
-                errorMessage="Invalid RNA sequence. Only A, U, G, C characters are allowed.";
-            }
-        }
-        else{
-            if (!validDNA.test(sequence)){
-                isValid=false;
-                errorMessage="Invalid DNA sequence. Only A, T, G, C characters are allowed.";
-            }
-        }
-        if (!isValid){
-            showError(errorMessage);
-            return false;
-        }
-        return true;
-    }
-    function showError(message){
-        $error.text(message).fadeIn(200).addClass("error-shake");
-        setTimeout(function (){
-            $error.removeClass("error-shake");
-        }, 500);
-        $result.hide();
-    }
-    function clearError(){
-        $error.hide().text("");
-        $result.show();
-    }
-    function updateSequenceConversion(sequence, conversionType, showBaseNames, colorize){
-        let outputSequence=getOutputSequence(sequence, conversionType);
-        let html="<p><strong>"+getLabel(conversionType)+":</strong> ";
-        if (colorize){
-            html+="<span class=\"sequence-container\">";
-            for (let i=0;i<outputSequence.length;i++){
-                let base=outputSequence[i];
-                html+="<span class=\"base-"+base.toLowerCase()+"\">"+base+"</span>";
-            }
-            html+="</span>";
-        }
-        else{
-            html+=outputSequence;
-        }
-        html+="</p>";
-        if (showBaseNames){
-            html+="<p><strong> Input Bases:</strong> "+getBaseNames(sequence)+"</p>";
-            html+="<p><strong> Output Bases:</strong> "+getBaseNames(outputSequence)+"</p>";
-        }
-        $result.html(html);
-    }
-    function updateProteinConversion(sequence, conversionType, showBaseNames, colorize){
-        let html="";
-        let codons, incomplete;
-        if (conversionType=="RNA_PROTEIN"){
-            let result=decodeRNAtoProtein(sequence);
-            codons=result.codons;
-            incomplete=result.incomplete;
-        }
-        else{
-            let rnaTranscript=getRNATranscriptFromDNA(sequence);
-            let result=decodeRNAtoProtein(rnaTranscript);
-            codons=result.codons;
-            incomplete=result.incomplete;
-        }
-        if (codons.length>0){
-            html="<table><tr><th>Codon</th><th>tRNA Anticodon</th><th>Amino Acid</th></tr>";
-            for (let i=0;i<codons.length;i++){
-                let codonObj=codons[i];
-                let codon=codonObj.codon;
-                let anticodon=codonObj.anticodon;
-                let aminoAcid=codonObj.aminoAcid;
-                let codonDisplay=codon;
-                let anticodonDisplay=anticodon;
-                if (colorize){
-                    codonDisplay=colorizeSequence(codon);
-                    anticodonDisplay=colorizeSequence(anticodon);
-                }
-                html+="<tr><td>"+codonDisplay+"</td><td>"+anticodonDisplay+"</td><td><strong>"+aminoAcid+"</strong></td></tr>";
-            }
-            html+="</table>";
-            if (incomplete){
-                html+="<p><strong>Incomplete codon:</strong> "+incomplete+"</p>";
-            }
-            if (showBaseNames){
-                html+="<p><strong>Input Bases:</strong> "+getBaseNames(sequence)+"</p>";
-            }
-            $result.html(html);
-        }
-        else{
-            showError("No complete codons found.");
-        }
-    }
-    function colorizeSequence(sequence){
-        let colored="";
-        for (let i=0;i<sequence.length;i++){
-            let base=sequence[i];
-            colored+="<span class=\"base-"+base.toLowerCase()+"\">"+base+"</span>";
-        }
-        return colored;
-    }
-    function getOutputSequence(sequence, conversionType){
-        if (conversionType=="DNA_COMPLEMENT"){
-            return getDNAComplement(sequence);
-        }
-        if (conversionType=="RNA_COMPLEMENT"){
-            return getRNAComplement(sequence);
-        }
-        if (conversionType=="DNA_TRANSCRIPT"){
-            return getRNATranscriptFromDNA(sequence);
-        }
-        return "";
-    }
-    function getDNAComplement(dnaSequence){
-        let complementMap={ A: "T", T: "A", C: "G", G: "C" };
-        let complement="";
-        for (let i=0;i<dnaSequence.length;i++){
-            let base=dnaSequence[i];
-            complement+=complementMap[base]||base;
-        }
-        return complement;
-    }
-    function getRNAComplement(rnaSequence){
-        let complementMap={ A: "U", U: "A", C: "G", G: "C" };
-        let complement="";
-        for (let i=0;i<rnaSequence.length;i++){
-            let base=rnaSequence[i];
-            complement+=complementMap[base]||base;
-        }
-        return complement;
-    }
-    function getRNATranscriptFromDNA(dnaSequence){
-        let transcriptMap={ A: "U", T: "A", C: "G", G: "C" };
-        let transcript="";
-        for (let i=0;i<dnaSequence.length;i++){
-            let base=dnaSequence[i];
-            transcript+=transcriptMap[base]||base;
-        }
-        return transcript;
-    }
-    function getAnticodon(codon){
-        let complementMap={ "A": "U", "U": "A", "G": "C", "C": "G" };
-        let anticodon="";
-        for (let i=codon.length-1;i>=0;i--){
-            let base=codon[i];
-            anticodon+=complementMap[base]||base;
-        }
-        return anticodon;
-    }
-    function decodeRNAtoProtein(rnaSequence){
-        let codons=[];
-        for (let i=0;i<rnaSequence.length;i+=3){
-            let codon=rnaSequence.slice(i, i+3);
-            if (codon.length==3){
-                let anticodon=getAnticodon(codon);
-                let aminoAcid=codonTable[codon]||"Unknown";
-                codons.push({ codon: codon, anticodon: anticodon, aminoAcid: aminoAcid });
-            }
-            else{
-                return{ codons: codons, incomplete: codon };
-            }
-        }
-        return{ codons: codons, incomplete: null };
-    }
-    function getLabel(conversionType){
-        let labels={
-            "DNA_COMPLEMENT": "Complement DNA",
-            "RNA_COMPLEMENT": "Complement RNA",
-            "DNA_TRANSCRIPT": "RNA Transcript"
-        };
-        return labels[conversionType]||"";
-    }
-    function getBaseName(base){
-        let baseNames={
-            A: "Adenine",
-            T: "Thymine",
-            U: "Uracil",
-            C: "Cytosine",
-            G: "Guanine"
-        };
-        return baseNames[base]||base;
-    }
-    function getBaseNames(sequence){
-        let names="";
-        for (let i=0;i<sequence.length;i++){
-            let base=sequence[i];
-            names+=getBaseName(base);
-            if (i<sequence.length-1){
-                names+=", ";
-            }
-        }
-        return names;
-    }
-    function updateBaseButtons(){
-        let conversionType=$conversionType.val();
-        let bases=(["DNA_COMPLEMENT", "DNA_TRANSCRIPT", "DNA_PROTEIN"].includes(conversionType))?dnaBases:rnaBases;
-        $baseButtons.empty();
-        for (let i=0;i<bases.length;i++){
-            let base=bases[i];
-            let $button=$("<button class=\"base-btn\">"+base+"</button>");
-            $button.on("click", function (){
-                let currentBase=this.textContent;
-                $sequenceInput.val($sequenceInput.val()+currentBase);
-                convertSequence();
-            });
-            $baseButtons.append($button);
-        }
-    }
-    function updateButtonStates(){
-        let sequence=$sequenceInput.val();
-        let disabled=sequence.length==0;
-        $deleteLast.prop("disabled", disabled);
-        $clearAll.prop("disabled", disabled);
-    }
-    function deleteLastCharacter(){
-        let currentSequence=$sequenceInput.val();
-        if (currentSequence.length>0){
-            $sequenceInput.val(currentSequence.slice(0, -1));
-            convertSequence();
-        }
-    }
-    function clearSequence(){
-        $sequenceInput.val("");
-        convertSequence();
-        $sequenceInput.focus();
-    }
-    function copyResultsToClipboard(){
-        let text=$result.text();
-        if (text){
-            navigator.clipboard.writeText(text).then(function (){
-                alert("Results copied to clipboard!");
-            }).catch(function (err){
-                showError("Failed to copy results.");
-                console.error("Copy failed:", err);
-            });
-        }
-        else{
-            showError("No results to copy.");
-        }
-    }
-    function resetApplication(){
-        $sequenceInput.val("");
-        $conversionType.val("DNA_COMPLEMENT");
-        $showBaseNames.prop("checked", true);
-        $colorizeSequence.prop("checked", true);
-        $result.html("");
-        $visualizerContainer.hide();
-        clearError();
+    $sequenceInput.tooltip({
+        content: "Enter DNA or RNA sequence (only A, T, G, C, U characters allowed)",
+        position:{ my: "left+10 center", at: "right center" }
+    });
+    $sequenceInput.on("focus", function (){ $(this).addClass("highlight-effect"); })
+        .on("blur", function (){ $(this).removeClass("highlight-effect"); })
+        .on("input", convertSequence);
+
+    $conversionType.on("change", function (){
         updateBaseButtons();
-        updateButtonStates();
-        $sequenceInput.focus();
-    }
+        convertSequence();
+    });
+    $showBaseNames.on("change", convertSequence);
+    $colorizeSequenceCheckbox.on("change", convertSequence);
+    $deleteLast.on("click", deleteLastCharacter);
+    $clearAll.on("click", clearSequence);
+    $copyResults.on("click", copyResultsToClipboard);
+    $resetAll.on("click", resetApplication);
+    updateBaseButtons();
+    updateButtonStates();
+    $sequenceInput.focus();
 });
