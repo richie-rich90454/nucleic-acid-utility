@@ -54,44 +54,20 @@
 ## Installation & Usage
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/richie-rich90454/nucleic-acid-pairing.git
-   cd nucleic-acid-pairing
+   git clone https://github.com/richie-rich90454/nucleic-acid-utility.git
+   cd nucleic-acid-utility
    ```
 2. **Install dependencies**
    ```bash
    npm install
    ```
    This installs Fastify and its static plugin.
-3. **Build/minify client script** (optional)
-   ```bash
-   terser script.js -o script.min.js --compress --mangle
-   ```
-4. **Start the server**
+3. **Start the server**
    ```bash
    node server.js
    ```
    The app will start on port **6001** by default.
    Open your browser at → `http://localhost:6001`
----
-## File Structure
-```
-NUCLEIC-ACID-PAIRING/
-├── node_modules/                     # npm dependencies (Fastify + plugins)
-├── demos/                            # example screenshots
-├── .gitignore
-├── LICENSE                           # MIT license
-├── package.json                      # project metadata & dependencies
-├── README.md                         # this file
-├── favicon.ico                       # favicon & social preview image
-├── index.html                        # markup, metadata, styles & CDN fallbacks
-├── NotoSans-VariableFont_wdth,wght.ttf  # embedded font
-├── jquery-3.7.1.js                   # local fallback if CDN fails
-├── jquery-ui.min.css                 # local fallback if CDN fails
-├── jquery-ui.min.js                  # local fallback if CDN fails
-├── script.js                         # conversion logic & visualization
-├── script.min.js                     # (optional) minified client code
-└── server.js                         # Fastify static file server
-```
 ---
 ## Customization
 * **Styling**
