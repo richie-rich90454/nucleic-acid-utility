@@ -74,7 +74,7 @@ body{
 .container{
     max-width: var(--container-width);
     margin: 1rem auto;
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(.8rem, 2.5vw, 1rem);
     background: var(--surface);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
@@ -85,7 +85,7 @@ header{
     background-color: var(--primary);
     color: var(--on-primary);
     text-align: center;
-    padding: clamp(1.5rem, 4vw, 2.5rem) 1rem;
+    padding: 1rem;
     box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
@@ -101,7 +101,7 @@ header::before{
     pointer-events: none;
 }
 header h1{
-    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
     margin: 0;
     font-weight: 800;
     letter-spacing: .5px;
@@ -132,7 +132,7 @@ header p{
 .card h2{
     margin-top: 0;
     color: var(--primary);
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-size: clamp(1rem, 2.8vw, 1.2rem);
     margin-bottom: .75rem;
 }
 .form-group{
@@ -211,8 +211,8 @@ input[type="text"]:focus, select:focus, textarea:focus{
     transform: none;
 }
 #results-container{
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--border);
 }
 #result{
@@ -220,7 +220,7 @@ input[type="text"]:focus, select:focus, textarea:focus{
     font-size: clamp(.95rem, 2vw, 1.1rem);
     line-height: 1.7;
     background: var(--muted-surface);
-    padding: 1.25rem;
+    padding: 1rem;
     border-radius: var(--radius-md);
     min-height: 120px;
     border: 3px dashed var(--border);
@@ -230,7 +230,7 @@ input[type="text"]:focus, select:focus, textarea:focus{
 }
 #error{
     color: var(--secondary);
-    padding: 1rem 1.25rem;
+    padding: .8rem 1rem;
     margin-top: 1rem;
     border-radius: var(--radius-sm);
     background: #DE000014;
@@ -300,7 +300,7 @@ table{
 }
 th, td{
     border: 2px solid var(--border-strong);
-    padding: .75rem;
+    padding: .50rem;
     text-align: center;
 }
 th{
@@ -312,7 +312,7 @@ th{
     text-align: center;
     background-color: var(--primary);
     color: var(--on-primary);
-    padding: 1.5rem 1rem;
+    padding: 1rem 1rem;
     font-size: .9rem;
     margin-top: 2rem;
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -399,6 +399,25 @@ a{
     border-radius: 8px;
     cursor: pointer;
     min-height: 44px;
+}
+#about-section{
+    margin-top: .5rem;
+}
+#about-section p{
+    font-size: .9rem;
+}
+#about-section h2{
+    margin-top: 0;
+    margin-bottom: .25rem;
+}
+details{
+    margin: 0;
+}
+summary{
+    font-family: "Noto Sans", sans-serif !important;
+}
+p{
+    font-family: "Noto Sans", sans-serif !important;
 }
 @media (max-width: 768px){
     .container{
