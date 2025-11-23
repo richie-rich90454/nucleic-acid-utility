@@ -1,4 +1,4 @@
-# Nucleic Acid Pairing and Protein Decoding
+# Nucleic Acid Pairing and Protein Decoding available at [dna.richardsblogs.com](https://dna.richardsblogs.com)
 > An interactive web application for exploring DNA and RNA sequences: convert between nucleic acids, compute complements and transcripts, and translate RNA (or coding‑strand DNA) into proteins.
 ## Table of Contents
 * [Features](#features)
