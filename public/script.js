@@ -458,6 +458,53 @@ document.addEventListener("DOMContentLoaded", function (){
         }
         updateButtonStates();
     }
+    function handleUrlParameters(){
+        let urlParams=new URLSearchParams(window.location.search);
+        let paramMapping={
+            "dna_dna": "DNA_COMPLEMENT",
+            "dna_rna": "DNA_TRANSCRIPT", 
+            "rna_rna": "RNA_COMPLEMENT",
+            "rna_protein": "RNA_PROTEIN",
+            "dna_protein": "DNA_PROTEIN"
+        };
+        let sequence="";
+        let conversionType="";
+        for (let [param, convType] of Object.entries(paramMapping)){
+            let paramValue=urlParams.get(param);
+            if (paramValue){
+                sequence=paramValue.toUpperCase().replace(/[^ATUGC]/g, "");
+                conversionType=convType;
+                break;
+            }
+        }
+        if (!sequence){
+            let sequenceParam=urlParams.get("sequence");
+            if (sequenceParam){
+                sequence=sequenceParam.toUpperCase().replace(/[^ATUGC]/g, "");
+                if (sequence.includes("U")&&!sequence.includes("T")){
+                    conversionType="RNA_PROTEIN";
+                }
+                else{
+                    conversionType="DNA_PROTEIN";
+                }
+            }
+        }
+        if (sequence){
+            $sequenceInput.val(sequence);
+            if (conversionType){
+                $conversionType.val(conversionType);
+            }
+            updateBaseButtons();
+            updateButtonStates();
+            convertSequence();
+            setTimeout(()=>{
+                document.getElementById("results").scrollIntoView({ 
+                    behavior: "smooth" 
+                });
+            }, 300);
+            document.title=`${conversionType} for ${sequence} - Nucleic Acid Utility`;
+        }
+    }
     $sequenceInput.tooltip({
         content: "Enter DNA or RNA sequence (only A, T, G, C, U characters allowed)",
         position:{ my: "left+10 center", at: "right center" }
@@ -479,4 +526,5 @@ document.addEventListener("DOMContentLoaded", function (){
     updateBaseButtons();
     updateButtonStates();
     $sequenceInput.focus();
+    handleUrlParameters();
 });

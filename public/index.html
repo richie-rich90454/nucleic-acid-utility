@@ -19,20 +19,74 @@
         <link rel="icon" type="image/png" href="favicon.png">
         <link rel="canonical" href="https://dna.richardsblogs.com">
         <script type="application/ld+json">
-        {
+            {
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            "name": "Nucleic Acid Utility",
+            "@type": "WebApplication",
+            "name": "Nucleic Acid Utility - DNA/RNA Conversion Tool",
             "applicationCategory": "EducationalApplication",
-            "description": "An interactive tool for converting DNA to RNA, visualizing codons, and translating to proteins.",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "description": "Interactive tool for converting DNA and RNA sequences, viewing complementary strands, and translating nucleotide sequences into proteins.",
             "url": "https://dna.richardsblogs.com",
+            "author": {
+                "@type": "Person",
+                "name": "Richard's Blogs"
+            },
             "creator": {
                 "@type": "Person",
                 "name": "richie-rich90454",
                 "url": "https://www.richardsblogs.com"
             },
-            "featureList": ["DNA to RNA conversion", "RNA to protein translation", "Codon visualization"]
-        }
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://dna.richardsblogs.com/?dna_dna={search_term_string}",
+                "actionPlatform": [
+                    "http://schema.org/DesktopWebPlatform",
+                    "http://schema.org/MobileWebPlatform"
+                ]
+                },
+                "query-input": {
+                    "@type": "PropertyValueSpecification",
+                    "valueRequired": true,
+                    "valueName": "search_term_string"
+                }
+            },
+            "mainEntity": {
+                "@type": "HowTo",
+                "name": "How to use Nucleic Acid Utility",
+                "description": "Step-by-step guide for converting DNA and RNA sequences",
+                "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Enter DNA or RNA sequence",
+                    "text": "Input your nucleotide sequence using A, T, G, C for DNA or A, U, G, C for RNA"
+                },
+                {
+                    "@type": "HowToStep", 
+                    "name": "Select conversion type",
+                    "text": "Choose from DNA complement, RNA transcript, RNA complement, or protein translation"
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "View results",
+                    "text": "See converted sequences, complementary strands, or translated proteins with visualization"
+                }
+                ]
+            },
+            "featureList": [
+                "DNA to DNA complement conversion",
+                "DNA to RNA transcription", 
+                "RNA to RNA complement conversion",
+                "RNA to protein translation",
+                "DNA to protein translation",
+                "Codon visualization",
+                "Amino acid sequence display"
+            ],
+            "applicationSuite": "Bioinformatics Tools",
+            "softwareVersion": "1.0"
+            }
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>window.jQuery||document.write('<script src="jquery-3.7.1.min.js"><\/script>')</script>
@@ -129,6 +183,6 @@
             <p>2025 Richard's Blogs</p>
             <p>Main site: <a href="https://www.richardsblogs.com" target="_blank">www.richardsblogs.com</a></p>
         </footer>
-        <script src="script.min.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
