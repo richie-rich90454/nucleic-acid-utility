@@ -1,58 +1,4 @@
-# Nucleic Acid Pairing and Protein Decoding available at [dna.richardsblogs.com](https://dna.richardsblogs.com)
-> An interactive web application for exploring DNA and RNA sequences: convert between nucleic acids, compute complements and transcripts, and translate RNA (or coding‑strand DNA) into proteins.
-## Table of Contents
-* [Features](#features)
-* [Demo](#demo)
-* [Prerequisites](#prerequisites)
-* [Installation & Usage](#installation--usage)
-* [File Structure](#file-structure)
-* [Customization](#customization)
-* [License](#license)
----
-## Features
-* **Sequence Input**
-  * Type or build a DNA/RNA sequence base by base with dedicated buttons.
-  * Inline validation with visual error feedback on invalid characters.
-* **Conversion Modes**
-  * **DNA → Complementary DNA**
-  * **DNA (coding strand) → RNA transcript**
-  * **RNA → Complementary RNA**
-  * **RNA → Protein translation**
-  * **DNA (coding strand) → Protein translation**
-* **Protein Decoding**
-  * Standard genetic codon table for amino acid lookup.
-  * Displays tRNA anticodons and full amino acid names.
-* **Interactive Visualization**
-  * Antiparallel strand diagram for DNA/RNA complement operations.
-  * Polypeptide chain view for protein translations with hover tooltips.
-  * Highlight, fade, and shake effects during sequence updates and errors.
-* **UI Options**
-  * Toggle full base‑name expansions (e.g., “Adenine, Thymine…”).
-  * Toggle colorized base display.
-  * Responsive design for desktop & mobile.
-* **Lightweight & Accessible**
-  * Built with plain HTML, CSS, and jQuery/UI.
-  * Fastify static server serving files with `no-cache` headers.
----
-## Demo
-* Live demo: [dna.richardsblogs.com](https://dna.richardsblogs.com)
-* Local preview: open your browser to `http://localhost:6001` after installation.
-### Screenshots
-| Operation                | Example                                                |
-| ------------------------ | ------------------------------------------------------ |
-| DNA → DNA Conversion     | ![DNA to DNA Conversion](demos/DNA_to_DNA.png)         |
-| DNA → RNA Conversion     | ![DNA to RNA Conversion](demos/DNA_to_RNA.png)         |
-| RNA → RNA Conversion     | ![RNA to RNA Conversion](demos/RNA_to_RNA.png)         |
-| RNA → Protein Conversion | ![RNA to Protein Conversion](demos/RNA_to_Protein.png) |
-| DNA → Protein Conversion | ![DNA to Protein Conversion](demos/DNA_to_Protein.png) |
----
-## Prerequisites
-* [Node.js](https://nodejs.org/) **≥ v14**
-* Internet access for CDN assets (automatic fallbacks to local copies included)
-* Modern web browser with JavaScript enabled
----
-## Installation & Usage
-# 🧬 Nucleic Acid Utility - Interactive DNA/RNA Conversion Tool
+# 🧬 Nucleic Acid Utility - Interactive DNA/RNA Conversion Tool available at [dna.richardsblogs.com](https://dna.richardsblogs.com)
 
 [![GitHub stars](https://img.shields.io/github/stars/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/network)
@@ -151,7 +97,7 @@ Output: UACGCA
 ```
 Input: AUGCCAUAG
 Operation: RNA → Protein
-Output: Met-Pro-Stop
+Output: Methionine-Proline-Stop
 ```
 
 ### Complete Workflow
@@ -213,6 +159,13 @@ We welcome contributions! Here's how you can help:
 3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
 4. **Push to the branch** (`git push origin feature/amazing-feature`)
 5. **Open a Pull Request**
+
+### Areas for Improvement
+- Additional genetic codes (mitochondrial, etc.)
+- Support for ambiguous bases (N, R, Y, etc.)
+- Sequence alignment features
+- Batch processing capabilities
+- Export functionality (FASTA, GenBank formats)
 
 ## 📄 License
 
