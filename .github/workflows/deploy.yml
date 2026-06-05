@@ -28,7 +28,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build application
         run: npm run build
@@ -39,8 +39,9 @@ jobs:
       - name: Merge app and docs into site output
         run: |
           mkdir -p _site
-          cp -r dist/* _site/
-          cp -r docs/.vitepress/dist _site/docs
+          cp -r dist/. _site/
+          mkdir -p _site/docs
+          cp -r docs/.vitepress/dist/. _site/docs/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
