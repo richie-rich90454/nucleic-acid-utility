@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://dna.richardsblogs.com/sitemap.xml
