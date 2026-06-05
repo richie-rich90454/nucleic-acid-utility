@@ -1,8 +1,15 @@
 # Nucleic Acid Utility
 
+[![GitHub stars](https://img.shields.io/github/stars/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/network)
+[![GitHub issues](https://img.shields.io/github/issues/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/issues)
+[![License](https://img.shields.io/github/license/richie-rich90454/nucleic-acid-utility?style=for-the-badge)](https://github.com/richie-rich90454/nucleic-acid-utility/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/richie-rich90454/nucleic-acid-utility?style=for-the-badge&include_prereleases)](https://github.com/richie-rich90454/nucleic-acid-utility/releases)
+[![Live Demo](https://img.shields.io/website?url=https%3A%2F%2Fdna.richardsblogs.com&style=for-the-badge)](https://dna.richardsblogs.com)
+
 An interactive DNA/RNA conversion and protein translation tool.
 
-Live at [dna.richardsblogs.com](https://dna.richardsblogs.com).
+Live at [dna.richardsblogs.com](https://dna.richardsblogs.com). Documentation at [dna.richardsblogs.com/docs/](https://dna.richardsblogs.com/docs/).
 
 ## What it does
 
@@ -37,12 +44,21 @@ npm run dev
 
 ## Documentation
 
-Full documentation is available in the `docs/` directory and can be built with VitePress:
+Full documentation is built with VitePress and served at `/docs/` alongside the application.
+
+Local development:
 
 ```
 npm run docs:dev
+```
+
+Build for production:
+
+```
 npm run docs:build
 ```
+
+Online: [dna.richardsblogs.com/docs/](https://dna.richardsblogs.com/docs/)
 
 ## Project structure
 
