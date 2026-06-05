@@ -33,12 +33,12 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          BASE: /
+          BASE: /nucleic-acid-utility/
 
       - name: Build documentation
         run: npm run docs:build
         env:
-          DOCS_BASE: /docs/
+          DOCS_BASE: /nucleic-acid-utility/docs/
 
       - name: Merge app and docs into site output
         run: |
