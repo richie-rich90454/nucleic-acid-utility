@@ -4,10 +4,11 @@
   "type": "module",
   "description": "A small web application to pair DNA and RNA bases for the subject of biology.",
   "scripts": {
+    "start": "node server.js",
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:full": "npm run build && npm run docs:build",
     "preview": "vite preview",
-    "start": "node server.js",
     "docs:dev": "vitepress dev docs --port 6002",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs --port 6002"
