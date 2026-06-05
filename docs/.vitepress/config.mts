@@ -55,7 +55,7 @@ export default defineConfig({
         ],
         footer:{
             message: "Released under the MIT License.",
-            copyright: "2025 Richard's Blogs",
+            copyright: "2024-2026 Richard's Blogs",
         },
     },
 });
