@@ -137,3 +137,6 @@ dist
 
 deprecated
 .trae
+
+# Tauri
+src-tauri/target
