@@ -3,6 +3,7 @@ let fs=require("fs");
 let fastify=require("fastify")({logger: false});
 let PORT=6001;
 let distDir=path.join(__dirname, "dist");
+let docsDir=path.join(__dirname, "docs/.vitepress/dist");
 fastify.register(require("@fastify/static"),{
     root: distDir,
     prefix: "/",
@@ -12,15 +13,40 @@ fastify.register(require("@fastify/static"),{
         if (filePath.endsWith(".html")){
             res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
         }
-    }
+    },
+    decorateReply: false
 });
+if (fs.existsSync(docsDir)){
+    fastify.register(require("@fastify/static"),{
+        root: docsDir,
+        prefix: "/docs/",
+        maxAge: "1y",
+        immutable: true,
+        setHeaders: (res, filePath)=>{
+            if (filePath.endsWith(".html")){
+                res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
+            }
+        },
+        decorateReply: false
+    });
+}
 fastify.register(require("@fastify/compress"));
 fastify.register(require("@fastify/rate-limit"),{
     max: 100,
     timeWindow: "1 minute"
 });
 let indexHtml=fs.readFileSync(path.join(distDir, "index.html"), "utf-8");
+let docsIndexHtml="";
+if (fs.existsSync(path.join(docsDir, "index.html"))){
+    docsIndexHtml=fs.readFileSync(path.join(docsDir, "index.html"), "utf-8");
+}
 fastify.setNotFoundHandler((request, reply)=>{
+    if (request.url.startsWith("/docs")){
+        if (docsIndexHtml){
+            reply.code(200).type("text/html").send(docsIndexHtml);
+            return;
+        }
+    }
     reply.code(200).type("text/html").send(indexHtml);
 });
 fastify.setErrorHandler((error, request, reply)=>{
