@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nucleic Acid Utility - DNA/RNA Conversion Tool</title>
+        <meta name="description" content="An interactive tool for converting DNA and RNA, viewing complementary strands, and translating nucleotide sequences into proteins. Free online DNA converter and RNA translator.">
+        <meta name="keywords" content="DNA converter, RNA translator, codon table, genetic code, nucleotide sequence, complementary strand, protein translation, molecular biology, bioinformatics, DNA to RNA, RNA to protein">
+        <meta name="author" content="Richard's Blogs">
+        <meta name="robots" content="index, follow">
+        <meta name="theme-color" content="#2C4A66">
+        <link rel="canonical" href="https://dna.richardsblogs.com">
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <meta property="og:title" content="Nucleic Acid Utility - DNA/RNA Conversion Tool">
+        <meta property="og:description" content="An interactive tool for converting DNA and RNA, viewing complementary strands, and translating nucleotide sequences into proteins.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dna.richardsblogs.com">
+        <meta property="og:site_name" content="Richard's Blogs">
+        <meta property="og:image" content="https://dna.richardsblogs.com/og-image.png">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Nucleic Acid Utility - DNA/RNA Conversion Tool">
+        <meta name="twitter:description" content="An interactive tool for converting DNA and RNA, viewing complementary strands, and translating nucleotide sequences into proteins.">
+        <meta name="twitter:image" content="https://dna.richardsblogs.com/og-image.png">
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Nucleic Acid Utility",
+            "url": "https://dna.richardsblogs.com",
+            "description": "An interactive tool for converting DNA and RNA, viewing complementary strands, and translating nucleotide sequences into proteins.",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Any",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "softwareVersion": "1.2.0"
+            }
+        </script>
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "What is the complementary DNA strand?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "The complementary DNA strand follows Watson-Crick base pairing rules: Adenine (A) pairs with Thymine (T), and Cytosine (C) pairs with Guanine (G). For example, the complement of ATGC is TACG."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do you transcribe DNA to RNA?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "During transcription, the DNA coding strand is used as a template to produce RNA. Thymine (T) is replaced by Uracil (U), so A becomes U, T becomes A, C becomes G, and G becomes C. For example, the DNA sequence ATGC transcribes to the RNA sequence UACG."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do you translate RNA to protein?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "RNA is translated to protein by reading it in groups of three nucleotides called codons. Each codon corresponds to a specific amino acid according to the standard genetic code. For example, AUG codes for Methionine (the start codon), and UAA, UAG, and UGA are stop codons."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is a codon table?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A codon table maps each of the 64 possible three-nucleotide RNA sequences (codons) to their corresponding amino acids. There are 20 standard amino acids and 3 stop codons. The codon table is fundamental to understanding how genetic information is translated into proteins."
+                    }
+                }
+            ]
+            }
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>
