@@ -3,6 +3,14 @@ export default defineConfig({
     title: "Nucleic Acid Utility",
     description: "Interactive DNA/RNA conversion and protein translation tool",
     base: "/docs/",
+    vite:{
+        server:{
+            port:6002,
+        },
+        preview:{
+            port:6002,
+        },
+    },
     themeConfig:{
         nav:[
             {text: "Home", link: "/"},

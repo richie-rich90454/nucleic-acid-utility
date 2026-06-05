@@ -9,4 +9,7 @@ export default defineConfig({
     server:{
         port:6001,
     },
+    preview:{
+        port:6001,
+    },
 });
