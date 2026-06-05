@@ -32,6 +32,14 @@
   ],
   "author": "richie-rich90454",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/richie-rich90454/nucleic-acid-utility.git"
+  },
+  "bugs": {
+    "url": "https://github.com/richie-rich90454/nucleic-acid-utility/issues"
+  },
+  "homepage": "https://dna.richardsblogs.com",
   "dependencies": {
     "@fastify/compress": "^8.3.1",
     "@fastify/rate-limit": "^10.3.0",
