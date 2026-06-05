@@ -1,8 +1,11 @@
 import {defineConfig} from "vitepress";
+
+const base = process.env.DOCS_BASE || "/docs/";
+
 export default defineConfig({
     title: "Nucleic Acid Utility",
     description: "Interactive DNA/RNA conversion and protein translation tool",
-    base: "/docs/",
+    base,
     vite:{
         server:{
             port:6002,

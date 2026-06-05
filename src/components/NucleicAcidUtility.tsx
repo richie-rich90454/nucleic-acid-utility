@@ -35,9 +35,6 @@ export default function NucleicAcidUtility(){
             setSequence(parsed.sequence);
             setConversionType(parsed.conversionType);
         }
-        if ("serviceWorker" in navigator){
-            navigator.serviceWorker.register("/sw.js").catch(()=>{});
-        }
         function handleKeyDown(e: KeyboardEvent){
             if (e.ctrlKey&&e.key=="Enter"){
                 e.preventDefault();

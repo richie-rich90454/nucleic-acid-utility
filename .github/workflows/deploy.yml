@@ -32,9 +32,13 @@ jobs:
 
       - name: Build application
         run: npm run build
+        env:
+          BASE: /nucleic-acid-utility/
 
       - name: Build documentation
         run: npm run docs:build
+        env:
+          DOCS_BASE: /nucleic-acid-utility/docs/
 
       - name: Merge app and docs into site output
         run: |
@@ -42,6 +46,14 @@ jobs:
           cp -r dist/. _site/
           mkdir -p _site/docs
           cp -r docs/.vitepress/dist/. _site/docs/
+          touch _site/.nojekyll
+
+      - name: Verify site output
+        run: |
+          echo "=== _site contents ==="
+          find _site -maxdepth 2 -type f | head -30
+          echo "=== _site/docs contents ==="
+          find _site/docs -maxdepth 2 -type f | head -20
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
