@@ -1,16 +1,27 @@
 let path=require("path");
+let fs=require("fs");
 let fastify=require("fastify")({logger: false});
 let PORT=6001;
-let publicDir=path.join(__dirname, "public");
+let distDir=path.join(__dirname, "dist");
 fastify.register(require("@fastify/static"),{
-    root: publicDir,
+    root: distDir,
     prefix: "/",
-    cacheControl: false,
-    maxAge: 0,
-    immutable: false
+    maxAge: "1y",
+    immutable: true,
+    setHeaders: (res, filePath)=>{
+        if (filePath.endsWith(".html")){
+            res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
+        }
+    }
 });
+fastify.register(require("@fastify/compress"));
+fastify.register(require("@fastify/rate-limit"),{
+    max: 100,
+    timeWindow: "1 minute"
+});
+let indexHtml=fs.readFileSync(path.join(distDir, "index.html"), "utf-8");
 fastify.setNotFoundHandler((request, reply)=>{
-    reply.code(404).type("text/plain").send("404 Not Found");
+    reply.code(200).type("text/html").send(indexHtml);
 });
 fastify.setErrorHandler((error, request, reply)=>{
     request.log.error(error);
