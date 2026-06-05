@@ -40,17 +40,17 @@
   "dependencies": {
     "@fastify/compress": "^8.3.1",
     "@fastify/rate-limit": "^10.3.0",
-    "@fastify/static": "^8.2.0",
-    "fastify": "^5.4.0",
+    "@fastify/static": "^9.1.3",
+    "fastify": "^5.8.5",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.5.0",
-    "typescript": "^5.8.0",
-    "vite": "^6.3.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
     "vitepress": "^1.6.4"
   }
 }
