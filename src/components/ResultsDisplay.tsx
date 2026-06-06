@@ -15,6 +15,23 @@ interface ResultsDisplayProps{
     onReset: ()=> void;
 }
 
+let TYPE_LABELS: Record<ConversionType, string>={
+    DNA_COMPLEMENT: "Complement",
+    DNA_REVERSE_COMPLEMENT: "Rev. Complement",
+    DNA_TRANSCRIPT: "Transcription",
+    RNA_COMPLEMENT: "Complement",
+    RNA_PROTEIN: "Translation",
+    DNA_PROTEIN: "Translation"
+}
+let TYPE_BADGES: Record<ConversionType, string>={
+    DNA_COMPLEMENT: "DNA",
+    DNA_REVERSE_COMPLEMENT: "DNA",
+    DNA_TRANSCRIPT: "DNA→RNA",
+    RNA_COMPLEMENT: "RNA",
+    RNA_PROTEIN: "RNA→Pro",
+    DNA_PROTEIN: "DNA→Pro"
+}
+
 export default function ResultsDisplay(props: ResultsDisplayProps){
     let converterRef=useRef(new SequenceConverter());
     let codonTableRef=useRef(new CodonTable());
@@ -44,10 +61,9 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
 
     function renderColorizedSequence(seq: string){
         if (!props.colorize){
-            return seq;
+            return <span className="result-seq-plain">{seq}</span>;
         }
         return seq.split("").map((base: string, i: number)=>{
-            let color=codonTableRef.current.getBaseColor(base);
             return <span key={i} className={"dna-pill "+base}>{base}</span>;
         });
     }
@@ -57,13 +73,13 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
             return null;
         }
         let names=codonTableRef.current.getBaseNames(seq);
-        return <div className="base-names" style={{marginTop: "0.5rem", fontSize: "0.85rem", color: "var(--muted)"}}>{names}</div>;
+        return <div className="base-names">{names}</div>;
     }
 
     function handleCopySection(label: string, text: string){
         clipboardRef.current.copyText(text).then((success: boolean)=>{
             if (success){
-                showToast(label+" copied to clipboard!");
+                showToast(label+" copied!");
             }
             else{
                 showToast("Failed to copy "+label+".");
@@ -75,10 +91,13 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
         let output=converterRef.current.getOutputSequence(props.sequence, props.conversionType);
         let label=converterRef.current.getLabel(props.conversionType);
         return (
-            <div>
-                <strong>{label}:</strong>
-                <button type="button" className="inline-copy-btn" onClick={()=>handleCopySection(label, output)}>Copy</button>
-                <div style={{marginTop: "0.5rem"}}>{renderColorizedSequence(output)}</div>
+            <div className="result-block">
+                <div className="result-header">
+                    <span className="result-type-badge">{TYPE_BADGES[props.conversionType]}</span>
+                    <span className="result-label">{label}</span>
+                    <button type="button" className="inline-copy-btn" onClick={()=>handleCopySection(label, output)}>Copy</button>
+                </div>
+                <div className="result-sequence">{renderColorizedSequence(output)}</div>
                 {renderBaseNames(output)}
             </div>
         );
@@ -95,22 +114,32 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
         let proteinResult: ProteinResult=codonTableRef.current.decodeRNAtoProtein(rnaSequence);
         let proteinText=proteinResult.codons.map((cr: CodonResult)=>cr.aminoAcid).join(", ");
         return (
-            <div>
-                <strong>Protein:</strong>
-                <button type="button" className="inline-copy-btn" onClick={()=>handleCopySection("Protein", proteinText)}>Copy</button>
+            <div className="result-block">
+                <div className="result-header">
+                    <span className="result-type-badge">{TYPE_BADGES[props.conversionType]}</span>
+                    <span className="result-label">Protein</span>
+                    <button type="button" className="inline-copy-btn" onClick={()=>handleCopySection("Protein", proteinText)}>Copy</button>
+                </div>
+                <div className="protein-summary">
+                    {proteinResult.codons.map((cr: CodonResult, i: number)=>(
+                        <span key={i} className="amino-chip" style={{"--amino-color": codonTableRef.current.aminoAcidColors[cr.aminoAcid]} as React.CSSProperties}>
+                            {cr.aminoAcid}
+                        </span>
+                    ))}
+                </div>
                 <table>
                     <thead>
                         <tr>
                             <th>Codon</th>
-                            <th>tRNA Anticodon</th>
+                            <th>Anticodon</th>
                             <th>Amino Acid</th>
                         </tr>
                     </thead>
                     <tbody>
                         {proteinResult.codons.map((cr: CodonResult, i: number)=>(
                             <tr key={i}>
-                                <td>{cr.codon}</td>
-                                <td>{cr.anticodon}</td>
+                                <td className="mono">{cr.codon}</td>
+                                <td className="mono">{cr.anticodon}</td>
                                 <td>
                                     <span className="amino-dot" style={{background: codonTableRef.current.aminoAcidColors[cr.aminoAcid]}}></span>
                                     {cr.aminoAcid}
@@ -120,7 +149,7 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
                     </tbody>
                 </table>
                 {proteinResult.incomplete&&(
-                    <div style={{marginTop: "0.5rem", fontSize: "0.85rem", color: "var(--muted)"}}>
+                    <div className="incomplete-codon-warning">
                         Incomplete codon: {proteinResult.incomplete}
                     </div>
                 )}
@@ -149,7 +178,7 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
         let text=getResultText();
         let success=await clipboardRef.current.copyText(text);
         if (success){
-            showToast("Results copied to clipboard!");
+            showToast("Results copied!");
         }
         else{
             showToast("Failed to copy results.");
@@ -159,7 +188,7 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
     async function handleShareUrl(){
         let success=await clipboardRef.current.copyShareUrl(props.sequence, props.conversionType, urlHandlerRef.current);
         if (success){
-            showToast("Share URL copied to clipboard!");
+            showToast("Share URL copied!");
         }
         else{
             showToast("Failed to copy share URL.");
@@ -175,6 +204,14 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
     let hasSequence=props.sequence!="";
     return (
         <div id="results" aria-live="polite">
+            {hasSequence&&!hasError&&(
+                <div className="input-summary">
+                    <span className="input-summary-badge">{props.conversionType.startsWith("RNA")?"RNA":"DNA"}</span>
+                    <span className="input-summary-seq">{props.sequence}</span>
+                    <span className="input-summary-arrow">→</span>
+                    <span className="input-summary-type">{TYPE_LABELS[props.conversionType]}</span>
+                </div>
+            )}
             <div id="results-container">
                 {hasSequence&&!hasError?(
                     <div id="result">
@@ -182,7 +219,7 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
                     </div>
                 ):!hasSequence?(
                     <div className="results-placeholder">
-                        <span style={{color: "var(--muted)", fontSize: "0.95rem"}}>Results will appear here</span>
+                        <span style={{color: "var(--muted)", fontSize: "0.85rem"}}>Results will appear here</span>
                     </div>
                 ):null}
                 <div id="error" role="alert" style={{display: hasError?"block":"none"}} className={errorShake?"error-shake":""}>
@@ -191,9 +228,9 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
             </div>
             {hasSequence&&!hasError&&(
                 <div className="footer-controls">
-                    <button type="button" className="footer-btn" onClick={handleCopyResults}>Copy Results</button>
-                    <button type="button" className="footer-btn" onClick={handleShareUrl} title="Copies a shareable link to clipboard">Share URL</button>
-                    <button type="button" className="footer-btn" onClick={handleResetAll}>Reset All</button>
+                    <button type="button" className="footer-btn" onClick={handleCopyResults}>Copy</button>
+                    <button type="button" className="footer-btn" onClick={handleShareUrl} title="Copies a shareable link to clipboard">Share</button>
+                    <button type="button" className="footer-btn" onClick={handleResetAll}>Reset</button>
                 </div>
             )}
         </div>
