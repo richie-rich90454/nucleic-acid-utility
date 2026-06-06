@@ -324,6 +324,16 @@ textarea{
     box-shadow: var(--shadow-sm);
     background: var(--surface-alt);
 }
+#base-buttons{
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+}
+#base-buttons .base-btn{
+    flex: 1;
+    min-width: 48px;
+    flex-basis: auto;
+}
 .base-btn:active{
     transform: translateY(0);
 }
@@ -805,7 +815,7 @@ p{font-family: "Noto Sans", sans-serif !important;}
     justify-content: center;
     gap: .1rem;
     line-height: 1.2;
-    color: var(--btn-text);
+    color: var(--text);
 }
 .conversion-btn:hover{
     transform: translateY(-1px);
@@ -820,6 +830,7 @@ p{font-family: "Noto Sans", sans-serif !important;}
     background: var(--btn-bg);
     border-color: var(--primary-strong);
     box-shadow: var(--shadow-sm);
+    color: #FFF;
 }
 .conversion-desc{
     font-size: .6rem;
