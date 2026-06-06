@@ -67,7 +67,7 @@ src/
   logic/         Headless TypeScript classes (no framework dependency)
   components/    React UI components (thin wrappers)
   types.ts       Shared TypeScript interfaces
-  style.full.css Vanilla CSS
+  style.css Vanilla CSS
 index.html       Vite entry point with SEO meta tags
 server.js        Fastify production server
 docs/            VitePress documentation

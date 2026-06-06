@@ -3,18 +3,18 @@ import {ThemeManager} from "../logic/ThemeManager";
 import {ThemeMode} from "../types";
 export default function ThemeToggle(){
     let managerRef=useRef(new ThemeManager());
-    let [icon, setIcon]=useState<string>("&#9790;");
+    let [mode, setMode]=useState<ThemeMode>("light");
     useEffect(()=>{
         managerRef.current.init();
-        setIcon(managerRef.current.getIcon());
+        setMode(managerRef.current.getCurrent());
     }, []);
     function handleToggle(){
         managerRef.current.toggle();
-        setIcon(managerRef.current.getIcon());
+        setMode(managerRef.current.getCurrent());
     }
     return (
-        <button id="theme-toggle" className="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode" onClick={handleToggle}>
-            <span dangerouslySetInnerHTML={{__html: icon}} />
+        <button id="theme-toggle" className="theme-toggle" aria-label={mode==="dark"?"Switch to light mode":"Switch to dark mode"} title="Toggle dark/light mode" onClick={handleToggle}>
+            <span>{mode==="dark"?"☀":"☾"}</span>
         </button>
     );
 }
