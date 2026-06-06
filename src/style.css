@@ -705,7 +705,8 @@ p{font-family: "Noto Sans", sans-serif !important;}
 .conversion-btn:hover{
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
-    background: var(--surface-alt);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 .conversion-btn:active{
     transform: translateY(0);
@@ -725,6 +726,7 @@ p{font-family: "Noto Sans", sans-serif !important;}
     opacity: .9;
 }
 .example-btn{
+    min-width: 200px;
     padding: .3rem .5rem;
     border-radius: var(--radius-sm);
     background: var(--surface-alt);
