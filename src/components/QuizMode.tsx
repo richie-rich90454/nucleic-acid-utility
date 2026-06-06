@@ -1,6 +1,7 @@
 import React, {useState, useRef} from "react";
 import {CodonTable} from "../logic/CodonTable";
 import {QuizEngine, QuizMode as QuizModeType, QuizQuestion, QuizStats} from "../logic/QuizEngine";
+import CodonWheel from "./CodonWheel";
 
 interface QuizModeProps{
     onClose: ()=> void;
@@ -164,6 +165,9 @@ export default function QuizMode(props: QuizModeProps){
                         </button>
                     </div>
                 )}
+                <div className="quiz-codon-wheel-ref">
+                    <CodonWheel />
+                </div>
             </div>
         );
     }
