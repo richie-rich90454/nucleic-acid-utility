@@ -14,6 +14,7 @@ export default defineConfig({
             port:6002,
         },
     },
+    cleanUrls: false,
     themeConfig:{
         nav:[
             {text: "Home", link: "/"},
