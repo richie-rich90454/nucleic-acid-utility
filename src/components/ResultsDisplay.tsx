@@ -182,7 +182,6 @@ export default function ResultsDisplay(props: ResultsDisplayProps){
                     </div>
                 ):!hasSequence?(
                     <div className="results-placeholder">
-                        <span className="placeholder-icon">📋</span>
                         <span style={{color: "var(--muted)", fontSize: "0.95rem"}}>Results will appear here</span>
                     </div>
                 ):null}

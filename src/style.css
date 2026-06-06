@@ -386,11 +386,6 @@ textarea{
     color: var(--muted);
     font-size: .85rem;
 }
-.results-placeholder-icon{
-    font-size: 1.5rem;
-    margin-bottom: .25rem;
-    opacity: .5;
-}
 .result-header{
     display: flex;
     align-items: center;
@@ -664,8 +659,9 @@ p{font-family: "Noto Sans", sans-serif !important;}
 }
 .conversion-group{
     display: flex;
-    flex-direction: column;
-    gap: .25rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
 }
 .conversion-group-label{
     font-size: .65rem;
@@ -674,15 +670,18 @@ p{font-family: "Noto Sans", sans-serif !important;}
     letter-spacing: .5px;
     color: var(--muted);
     padding-left: .2rem;
+    width: 100%;
+    margin-bottom: .25rem;
 }
 .conversion-group-buttons{
     display: flex;
     flex-wrap: wrap;
     gap: .3rem;
+    flex-direction: row;
 }
 .conversion-btn{
-    flex: 1 1 auto;
-    min-width: 50px;
+    flex: 0 1 auto;
+    min-width: 200px;
     max-width: max-content;
     padding: .3rem .5rem;
     border-radius: var(--radius-sm);
