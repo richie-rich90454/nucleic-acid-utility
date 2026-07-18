@@ -1,11 +1,11 @@
 import {defineConfig} from "vitepress";
 
-const base = process.env.DOCS_BASE || "/docs/";
+const base = "/docs/";
 
 export default defineConfig({
     title: "Nucleic Acid Utility",
     description: "Interactive DNA/RNA conversion and protein translation tool",
-    base,
+    base: "/docs/",
     vite:{
         server:{
             port:6002,
@@ -14,7 +14,10 @@ export default defineConfig({
             port:6002,
         },
     },
-    cleanUrls: false,
+    cleanUrls: true,
+            head: [
+            ["link", { rel: "icon", href: "/docs/favicon.png" }]
+        ],
     themeConfig:{
         nav:[
             {text: "Home", link: "/"},
