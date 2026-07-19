@@ -14,35 +14,7 @@ export default defineConfig({
     },
     cleanUrls: true,
     head: [
-        ["link",{ rel: "icon", href: base + "favicon.png" }],
-        ["script",{},
-            `(function(){
-                var isTauri=!!(window.__TAURI__&&window.__TAURI__.opener);
-                document.addEventListener("click",function(e){
-                    var target=e.target.closest("a");
-                    if(!target)return;
-                    var href=target.getAttribute("href");
-                    if(!href)return;
-                    var url;
-                    try{url=new URL(href,window.location.href);}
-                    catch(_){return;}
-                    var isExternal=url.origin!==window.location.origin;
-                    if(!isExternal)return;
-                    e.preventDefault();
-                    if(isTauri){
-                        try{
-                            window.__TAURI__.opener.openUrl(url.href);
-                        }
-                        catch(_){
-                            window.open(url.href,"_blank");
-                        }
-                    }
-                    else{
-                        window.open(url.href,"_blank");
-                    }
-                });
-            })();`
-        ]
+        ["link",{ rel: "icon", href: base + "favicon.png" }]
     ],
     themeConfig:{
         nav: [
