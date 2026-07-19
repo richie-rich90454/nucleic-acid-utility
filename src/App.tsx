@@ -18,7 +18,7 @@ export default function App(){
             </main>
             <footer id="footer">
                 <p>2024-2026 Richard&apos;s Blogs</p>
-                <p>Main site: <a href="https://www.richardsblogs.com" target="_blank" rel="noopener noreferrer">www.richardsblogs.com</a> | <a href="./docs/" target="_blank" rel="noopener noreferrer">Documentation</a></p>
+                <p>Main site: <a href="https://www.richardsblogs.com" target="_blank" rel="noopener noreferrer">www.richardsblogs.com</a> | <a href={`${import.meta.env.BASE_URL}docs/`} target="_blank" rel="noopener noreferrer">Documentation</a></p>
             </footer>
             <Toast />
         </>
