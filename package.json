@@ -1,6 +1,6 @@
 {
   "name": "nucleic-acid-utility",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "A small web application to pair DNA and RNA bases for the subject of biology.",
   "scripts": {
