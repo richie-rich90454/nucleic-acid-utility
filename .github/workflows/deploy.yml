@@ -36,7 +36,7 @@ jobs:
           BASE: /nucleic-acid-utility/
 
       - name: Build documentation
-        run: npm run docs:build
+        run: npm run docs:build -- --base /nucleic-acid-utility/docs/
         env:
           DOCS_BASE: /nucleic-acid-utility/docs/
 
