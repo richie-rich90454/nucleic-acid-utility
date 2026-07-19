@@ -36,16 +36,16 @@ export default defineConfig({
     plugins: [
         react(),
         legacy({
-            targets: ["chrome >= 23", "safari >= 6", "ie >= 11"],
+            targets: ["ie >= 11", "chrome >= 49", "firefox >= 52", "safari >= 10"],
             additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
-            modernPolyfills: true
+            modernPolyfills: false,
+            renderLegacyChunks: true
         }),
         vitepressBuildPlugin()
     ],
     build: {
         outDir: "dist",
-        sourcemap: false,
-        minify: "terser"
+        sourcemap: false
     },
     server: {
         port: 6001
