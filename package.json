@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build",
+    "tauri:build": "npm run build && tauri build",
     "docs:dev": "vitepress dev docs --port 6002",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs --port 6002"
@@ -46,6 +46,7 @@
     "@fastify/rate-limit": "^11.1.0",
     "@fastify/static": "^10.1.0",
     "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-opener": "^2.5.4",
     "fastify": "^5.10.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
